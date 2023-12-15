@@ -30,7 +30,10 @@ namespace ThumperChaseMusic.Patches
                 thumperSound = ab.LoadAsset<AudioClip>("thumper_chase.mp3");
             }
             __instance.GetComponent<AudioSource>().clip = thumperSound;
-            __instance.GetComponent<AudioSource>().volume = 0.4f;
+            __instance.GetComponent<AudioSource>().volume = 0.8f;
+            __instance.GetComponent<AudioSource>().loop = true;
+            __instance.GetComponent<AudioSource>().dopplerLevel = 0.0f;
+            __instance.GetComponent<AudioSource>().spatialBlend = 0.7f;
         }
 
         [HarmonyPatch("Update")]
