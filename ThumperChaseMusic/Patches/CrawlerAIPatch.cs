@@ -34,6 +34,7 @@ namespace ThumperChaseMusic.Patches
             __instance.GetComponent<AudioSource>().loop = true;
             __instance.GetComponent<AudioSource>().dopplerLevel = 0.0f;
             __instance.GetComponent<AudioSource>().spatialBlend = 0.7f;
+            __instance.GetComponent<AudioSource>().maxDistance = 150f;
         }
 
         [HarmonyPatch("Update")]
