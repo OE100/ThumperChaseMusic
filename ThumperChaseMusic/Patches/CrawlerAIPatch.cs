@@ -3,6 +3,7 @@ using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace ThumperChaseMusic.Patches
             Plugin.log.LogInfo("Patching CrawlerAI...");
             if (thumperSound == null)
             {
-                AssetBundle ab = AssetBundle.LoadFromFile(Paths.PluginPath + "\\OE_Tweaks\\Sounds\\thumpersounds");
+                AssetBundle ab = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream(Assembly.GetExecutingAssembly().GetManifestResourceNames()[0]));
                 if (ab == null)
                 {
                     Plugin.log.LogError("Failed to load thumpersounds asset bundle");
