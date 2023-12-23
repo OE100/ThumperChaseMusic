@@ -15,6 +15,8 @@ namespace ThumperChaseMusic.Patches
     {
         private static AudioClip thumperSound = null;
 
+        internal static Dictionary<CrawlerAI, AudioSource> crawlerSources = new Dictionary<CrawlerAI, AudioSource>();
+        
         [HarmonyPatch("Start")]
         [HarmonyPostfix]
         public static void patchThumperChaseSoundStart(CrawlerAI __instance)
@@ -30,32 +32,36 @@ namespace ThumperChaseMusic.Patches
                 }
                 thumperSound = ab.LoadAsset<AudioClip>("thumper_chase.mp3");
             }
-            __instance.GetComponent<AudioSource>().clip = thumperSound;
-            __instance.GetComponent<AudioSource>().volume = 0.8f;
-            __instance.GetComponent<AudioSource>().loop = true;
-            __instance.GetComponent<AudioSource>().dopplerLevel = 0.0f;
-            __instance.GetComponent<AudioSource>().spatialBlend = 0.7f;
-            __instance.GetComponent<AudioSource>().maxDistance = 150f;
+
+            AudioSource newSource = __instance.gameObject.AddComponent<AudioSource>();
+            newSource.clip = thumperSound;
+            newSource.volume = 0.8f;
+            newSource.loop = true;
+            newSource.dopplerLevel = 0.0f;
+            newSource.spatialBlend = 0.7f;
+            newSource.maxDistance = 150f;
+            crawlerSources[__instance] = newSource;
         }
 
         [HarmonyPatch("Update")]
         [HarmonyPostfix]
         public static void patchTumperChaseSoundUpdate(CrawlerAI __instance)
         {
+            AudioSource source = crawlerSources[__instance];
             if (__instance.isEnemyDead)
             {
-                __instance.GetComponent<AudioSource>().Stop();
+                source.Stop();
             }
-            if (__instance.currentBehaviourStateIndex == 0 && __instance.GetComponent<AudioSource>().isPlaying)
+            if (__instance.currentBehaviourStateIndex == 0 && source.isPlaying)
             {
-                __instance.GetComponent<AudioSource>().Pause();
+                source.Pause();
             }
-            else if (__instance.currentBehaviourStateIndex != 0 && !__instance.GetComponent<AudioSource>().isPlaying)
+            else if (__instance.currentBehaviourStateIndex != 0 && !source.isPlaying)
             {
-                if (__instance.GetComponent<AudioSource>().time > 0.0f && __instance.GetComponent<AudioSource>().time <= thumperSound.length - 0.1)
-                    __instance.GetComponent<AudioSource>().UnPause();
+                if (source.time > 0.0f && source.time <= thumperSound.length - 0.1)
+                    source.UnPause();
                 else
-                    __instance.GetComponent<AudioSource>().Play();
+                    source.Play();
             }
         }
     }
